@@ -5,7 +5,7 @@ namespace DataAccessLayer.Repositories
 {
     public class UserRepository : IRepository<User, string>
     {
-        Dictionary<string, User> _users = new Dictionary<string, User>();
+        static Dictionary<string, User> _users = new Dictionary<string, User>();
 
         public User Create(User user)
         {
@@ -21,7 +21,6 @@ namespace DataAccessLayer.Repositories
                 return null;
 
             List<User> users = _users.Values.ToList();
-            users.Sort();
             return users;
         }
 

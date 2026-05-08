@@ -5,7 +5,7 @@ namespace DataAccessLayer.Repositories
 {
     public class NotificationRepository : IRepository<Notification, string>
     {
-        Dictionary<string, Notification> _notifications = new Dictionary<string, Notification>();
+        static Dictionary<string, Notification> _notifications = new Dictionary<string, Notification>();
 
         public Notification Create(Notification user)
         {

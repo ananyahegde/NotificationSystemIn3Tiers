@@ -1,11 +1,15 @@
+using System.Text.RegularExpressions;
+using BusinessLayer.Interfaces;
+using BusinessLayer.Utilities;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
-using BusinessLayer.Interfaces;
+using DataAccessLayer.Exceptions;
 
 namespace BusinessLayer.Services
 {
     public class UserService : IUserInteract
     {
+        ValidatorHelper helper = new ValidatorHelper();
         private UserRepository _repo = new UserRepository();
 
         public void UserMenu()
@@ -25,7 +29,11 @@ namespace BusinessLayer.Services
                 {
                     case 1: CreateUser(); break;
                     case 2: ReadUser(); break;
-                    case 3: ReadAllUsers(); break;
+                    case 3:
+                        var users = ReadAllUsers();
+                        foreach (var u in users)
+                            Console.WriteLine($"\nUserId: {u.UserId}\nName: {u.Name}\nEmail: {u.Email}\nPhone: {u.Phone}\n");
+                        break;
                     case 4: UpdateUser(); break;
                     case 5: DeleteUser(); break;
                     case 6: return;
@@ -33,6 +41,7 @@ namespace BusinessLayer.Services
                 }
             }
         }
+
 
         public void CreateUser()
         {
@@ -42,15 +51,51 @@ namespace BusinessLayer.Services
             Console.Write("Please enter your name: ");
             user.Name = Console.ReadLine() ?? "";
 
-            Console.Write("\nPlease enter your email: ");
-            user.Email = Console.ReadLine() ?? "";
+            // check if the email is valid
+            while (true)
+            {
+                try
+                {
+                    Console.Write("\nPlease enter your email: ");
+                    string email = Console.ReadLine() ?? "";
+                    if (!helper.IsValid(email))
+                        throw new InvalidDetailsExceptions("Email is not valid");
+                    user.Email = email;
+                    break;
+                }
+                catch (InvalidDetailsExceptions ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
-            Console.Write("\nPlease enter your phone number: ");
-            user.Phone = Console.ReadLine() ?? "";
+            // check if the phone number is valid
+            while (true)
+            {
+                try
+                {
+                    Regex regex = new Regex(@"^(0|\+91)?[789]\d{9}$");
+                    Console.Write("\nPlease enter your phone number: ");
+                    string phone = Console.ReadLine() ?? "";
+                    Match match = regex.Match(phone);
+                    if (match.Success)
+                    {
+                        user.Phone = phone;
+                        break;
+                    }
+                    else
+                        throw new InvalidDetailsExceptions("Phone number is not valid.");
+                }
+                catch (InvalidDetailsExceptions ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
             User createdUser = _repo.Create(user);
             Console.WriteLine($"\nUser Created.\nUserId: {createdUser.UserId}\nName: {createdUser.Name}\nEmail: {createdUser.Email}\nPhone: {createdUser.Phone}\n");
         }
+
 
         public List<User>? ReadAllUsers()
         {
@@ -60,15 +105,14 @@ namespace BusinessLayer.Services
                 Console.WriteLine("No users found.");
                 return null;
             }
-            foreach (var u in users)
-                Console.WriteLine($"\nUserId: {u.UserId}\nName: {u.Name}\nEmail: {u.Email}\nPhone: {u.Phone}\n");
             return users;
         }
+
 
         public void ReadUser()
         {
             Console.Write("\nEnter the UserId: ");
-            string userId = Console.ReadLine();
+            string userId = Console.ReadLine() ?? "";
             User? user = _repo.Read(userId);
 
             if (user == null)
@@ -81,6 +125,8 @@ namespace BusinessLayer.Services
             }
         }
 
+
+        // note that update does not enforce business rules
         public void UpdateUser()
         {
             User user = new User();
@@ -101,10 +147,11 @@ namespace BusinessLayer.Services
             Console.WriteLine($"\nUser Updated.\nUserId: {updatedUser.UserId}\nName: {updatedUser.Name}\nEmail: {updatedUser.Email}\nPhone: {updatedUser.Phone}\n");
         }
 
+
         public void DeleteUser()
         {
             Console.Write("\nPlease Enter the UserId for the user you want to delete.");
-            string userId = Console.ReadLine();
+            string userId = Console.ReadLine() ?? "";
             User? deletedUser = _repo.Delete(userId);
             Console.WriteLine($"\nUser Deleted.\nUserId: {deletedUser.UserId}\nName: {deletedUser.Name}\nEmail: {deletedUser.Email}\nPhone: {deletedUser.Phone}\n");
         }

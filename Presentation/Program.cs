@@ -49,12 +49,12 @@ namespace Presentation
         {
             UserService userService = new UserService();
 
+            Console.WriteLine("______________________________________");
+            Console.WriteLine("Welcome To Simple Notification System!");
+            Console.WriteLine("______________________________________\n");
+
             while (true)
             {
-                Console.WriteLine("______________________________________");
-                Console.WriteLine("Welcome To Simple Notification System!");
-                Console.WriteLine("______________________________________\n");
-
                 Console.WriteLine("Please enter what you wish to do.");
                 Console.WriteLine("1. Add a User");
                 Console.WriteLine("2. Send a Notification to existing User");
