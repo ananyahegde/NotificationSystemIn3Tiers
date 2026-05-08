@@ -1,3 +1,4 @@
+using DataAccessLayer.Models;
 using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories

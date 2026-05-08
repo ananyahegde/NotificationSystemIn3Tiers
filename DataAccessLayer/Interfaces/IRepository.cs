@@ -1,13 +1,11 @@
 namespace DataAccessLayer.Interfaces
 {
-    public interface IRepository<K, T> where T : class
+    internal interface IRepository<T, K> where T : class
     {
         public T Create(T item);
-        public T? GetAccount(K key);
-        public List<T>? GetAccounts();
-
-        public T? Update(K key, T item);
+        public List<T>? ReadAll();
+        public T? Read(K key);
+        public T? Update(T item, K key);
         public T? Delete(K key);
-
     }
 }
