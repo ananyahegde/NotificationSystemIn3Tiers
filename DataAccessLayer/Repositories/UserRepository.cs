@@ -3,7 +3,7 @@ using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories
 {
-    internal class UserRepository : IRepository<User, string>
+    public class UserRepository : IRepository<User, string>
     {
         Dictionary<string, User> _users = new Dictionary<string, User>();
 

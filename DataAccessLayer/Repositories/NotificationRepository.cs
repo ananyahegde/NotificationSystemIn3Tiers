@@ -3,7 +3,7 @@ using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories
 {
-    internal class NotificationRepository : IRepository<Notification, string>
+    public class NotificationRepository : IRepository<Notification, string>
     {
         Dictionary<string, Notification> _notifications = new Dictionary<string, Notification>();
 
