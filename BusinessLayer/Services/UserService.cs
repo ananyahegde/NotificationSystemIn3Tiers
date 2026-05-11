@@ -31,6 +31,8 @@ namespace BusinessLayer.Services
                     case 2: ReadUser(); break;
                     case 3:
                         var users = ReadAllUsers();
+                        if (users == null)
+                            break;
                         foreach (var u in users)
                             Console.WriteLine($"\nUserId: {u.UserId}\nName: {u.Name}\nEmail: {u.Email}\nPhone: {u.Phone}\n");
                         break;
@@ -111,7 +113,7 @@ namespace BusinessLayer.Services
 
         public void ReadUser()
         {
-            Console.Write("\nEnter the UserId: ");
+            Console.Write("\nEnter username: ");
             string userId = Console.ReadLine() ?? "";
             User? user = _repo.Read(userId);
 
@@ -131,16 +133,16 @@ namespace BusinessLayer.Services
         {
             User user = new User();
 
-            Console.Write("\nPlease enter the Id of the user you want to modify.");
+            Console.Write("\nPlease enter the userid of the user you want to modify: ");
             user.UserId = Console.ReadLine() ?? "";
 
-            Console.Write("\nPlease enter updated name.");
+            Console.Write("\nPlease enter updated name: ");
             user.Name = Console.ReadLine() ?? "";
 
-            Console.Write("\nPlease enter updated email.");
+            Console.Write("\nPlease enter updated email: ");
             user.Email = Console.ReadLine() ?? "";
 
-            Console.Write("\nPlease enter updated phone number.");
+            Console.Write("\nPlease enter updated phone number: ");
             user.Phone = Console.ReadLine() ?? "";
 
             User? updatedUser = _repo.Update(user, user.UserId);
@@ -150,7 +152,7 @@ namespace BusinessLayer.Services
 
         public void DeleteUser()
         {
-            Console.Write("\nPlease Enter the UserId for the user you want to delete.");
+            Console.Write("\nPlease Enter the userid for the user you want to delete: ");
             string userId = Console.ReadLine() ?? "";
             User? deletedUser = _repo.Delete(userId);
             Console.WriteLine($"\nUser Deleted.\nUserId: {deletedUser.UserId}\nName: {deletedUser.Name}\nEmail: {deletedUser.Email}\nPhone: {deletedUser.Phone}\n");

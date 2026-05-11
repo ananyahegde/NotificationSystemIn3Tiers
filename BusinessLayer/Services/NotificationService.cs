@@ -17,13 +17,14 @@ namespace BusinessLayer.Services
         private (Notification, INotificationSender, int) TakeNotificationDetails()
         {
             int typeChoice;
+            Notification notification = new Notification();
 
             Console.Write("\nPlease select the type of notification. 1 for Email, 2 for SMS: ");
             while (!int.TryParse(Console.ReadLine(), out typeChoice) || typeChoice < 1 || typeChoice > 2)
                 Console.WriteLine("Invalid entry. Please try again.");
             INotificationSender sender = typeChoice == 1 ? new EmailNotificationSender() : new SmsNotificationSender();
+            notification.NotifType = (NotifType)typeChoice;
 
-            Notification notification = new Notification();
             // validate message
             while (true)
             {
@@ -53,51 +54,8 @@ namespace BusinessLayer.Services
 
         private void SendNotificationToUser(Notification notification, INotificationSender sender, int type)
         {
-            string email = "";
-            string phone = "";
-            string details = type == 1 ? "Email" : "Phone Number";
-
-            Console.Write($"\nEnter the {details} of the user: ");
-            // check for valid email/phone
-            if (type == 1)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        email = Console.ReadLine() ?? "";
-                        if (!helper.IsValid(email))
-                            throw new InvalidDetailsExceptions("Email is not valid");
-                        break;
-                    }
-                    catch (InvalidDetailsExceptions ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
-            else
-            {
-                while (true)
-                {
-                    try
-                    {
-                        Regex regex = new Regex(@"^(0|\+91)?[789]\d{9}$");
-                        phone = Console.ReadLine() ?? "";
-                        Match match = regex.Match(phone);
-                        if (match.Success)
-                        {
-                            break;
-                        }
-                        else
-                            throw new InvalidDetailsExceptions("Phone number is not valid.");
-                    }
-                    catch (InvalidDetailsExceptions ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
+            Console.Write($"\nEnter the userid of the user: ");
+            notification.UserId = Console.ReadLine() ?? "";
 
             List<User>? users = new UserService().ReadAllUsers();
             if (users == null)
@@ -105,12 +63,7 @@ namespace BusinessLayer.Services
                 return;
             }
 
-            User? user = null;
-            // find user by email/phone number
-            if (type == 1)
-                user = users.Where(u => u.Email == email).FirstOrDefault();
-            else
-                user = users.Where(u => u.Phone == phone).FirstOrDefault();
+            User? user = users.Where(u => u.UserId == notification.UserId).FirstOrDefault();
             if (user == null)
             {
                 Console.WriteLine("User not found.");
@@ -164,8 +117,11 @@ namespace BusinessLayer.Services
         public void CreateNotification()
         {
             var details = TakeNotificationDetails();
+            Console.Write($"\nEnter the userid of the user: ");
+            details.Item1.UserId = Console.ReadLine() ?? "";
             Notification createdNotification = _repo.Create(details.Item1);
-            Console.WriteLine($"\nNotification Created.\nNotificationId: {createdNotification.MessageId}\nMessage: {createdNotification.Message}\nDate: {createdNotification.SentDate}\nType: {createdNotification.NotifType}");
+
+            Console.WriteLine($"\nNotification Created.\nNotificationId: {createdNotification.MessageId}\nMessage: {createdNotification.Message}\nDate: {createdNotification.SentDate}\nType: {createdNotification.NotifType}\nUserId: {createdNotification.UserId}");
         }
 
 
@@ -178,7 +134,7 @@ namespace BusinessLayer.Services
                 return null;
             }
             foreach (var n in notifications)
-                Console.WriteLine($"\nNotificationId: {n.MessageId}\nMessage: {n.Message}\nDate: {n.SentDate}\nType: {n.NotifType}\n");
+                Console.WriteLine($"\nNotificationId: {n.MessageId}\nMessage: {n.Message}\nDate: {n.SentDate}\nType: {n.NotifType}\nUserId: {n.UserId}\n");
             return notifications;
         }
 
@@ -192,7 +148,7 @@ namespace BusinessLayer.Services
                 Console.WriteLine("Notification not found.");
                 return;
             }
-            Console.WriteLine($"\nNotificationId: {notification.MessageId}\nMessage: {notification.Message}\nDate: {notification.SentDate}\nType: {notification.NotifType}");
+            Console.WriteLine($"\nNotificationId: {notification.MessageId}\nMessage: {notification.Message}\nDate: {notification.SentDate}\nType: {notification.NotifType}\nUserId: {notification.UserId}\n");
         }
 
         public void UpdateNotification()

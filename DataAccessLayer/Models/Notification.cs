@@ -12,14 +12,16 @@ namespace DataAccessLayer.Models
         public string Message { get; set; } = string.Empty;
         public DateTime SentDate { get; set; }
         public NotifType NotifType { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         public Notification() { }
 
-        public Notification(string messageId, string message, DateTime sentDate)
+        public Notification(string messageId, string message, DateTime sentDate, string userId)
         {
             this.MessageId = messageId;
             this.Message = message;
             this.SentDate = sentDate;
+            this.UserId = userId;
         }
 
         public override string ToString()

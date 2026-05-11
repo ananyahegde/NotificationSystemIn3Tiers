@@ -24,6 +24,27 @@ dotnet add Presentation/Presentation.csproj reference BusinessLayer/BusinessLaye
 dotnet add BusinessLayer/BusinessLayer.csproj reference DataAccessLayer/DataAccessLayer.csproj
 ```
 
+```bash
+createdb notificationsystem -U postgres
+```
+
+```bash
+CREATE TABLE users (
+    userid VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(20) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE notifications (
+    messageid VARCHAR(36) PRIMARY KEY,
+    message VARCHAR(160) NOT NULL,
+    sentdate DATE NOT NULL,
+    notiftype SMALLINT NOT NULL,
+    userid VARCHAR NOT NULL REFERENCES users(userid)
+);
+```
+
 To run the project: 
 ```bash
 cd Presentation
