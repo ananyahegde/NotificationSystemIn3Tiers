@@ -2,30 +2,20 @@
 // ConnectDb method returns a connection object.
 
 using Npgsql;
-
 namespace DataAccessLayer
 {
     public class Connect
     {
-        public Connect()
-        {
-            StoreEnv storeEnv = new StoreEnv();
-            storeEnv.StoreEnvVariables();
-        }
-
         public NpgsqlConnection ConnectDb()
         {
-            string? host = System.Environment.GetEnvironmentVariable("Host");
-            string? port = System.Environment.GetEnvironmentVariable("Port");
-            string? database = System.Environment.GetEnvironmentVariable("Database");
-            string? username = System.Environment.GetEnvironmentVariable("Username");
-            string? password = System.Environment.GetEnvironmentVariable("Password");
-
-            string connectionString =
-              $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+            DotNetEnv.Env.Load();
+            var connectionString = $"Host={Environment.GetEnvironmentVariable("Host")};" +
+                $"Port={Environment.GetEnvironmentVariable("Port")};" +
+                $"Database={Environment.GetEnvironmentVariable("Database")};" +
+                $"Username={Environment.GetEnvironmentVariable("Username")};" +
+                $"Password={Environment.GetEnvironmentVariable("Password")}";
 
             NpgsqlConnection connection = new NpgsqlConnection(connectionString);
-
             try
             {
                 connection.Open();
@@ -39,7 +29,6 @@ namespace DataAccessLayer
             {
                 connection?.Close();
             }
-
             return connection;
         }
     }
