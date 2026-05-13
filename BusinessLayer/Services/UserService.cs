@@ -113,7 +113,7 @@ namespace BusinessLayer.Services
 
         public void ReadUser()
         {
-            Console.Write("\nEnter username: ");
+            Console.Write("\nEnter userid: ");
             string userId = Console.ReadLine() ?? "";
             User? user = _repo.Read(userId);
 

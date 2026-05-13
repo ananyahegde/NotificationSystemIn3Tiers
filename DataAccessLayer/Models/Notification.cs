@@ -12,7 +12,10 @@ namespace DataAccessLayer.Models
         public string Message { get; set; } = string.Empty;
         public DateTime SentDate { get; set; }
         public NotifType NotifType { get; set; }
+
+        // fk
         public string UserId { get; set; } = string.Empty;
+        public User User { get; set; }
 
         public Notification() { }
 

@@ -1,4 +1,4 @@
-# 3 Tier Architecture with ADO.NET
+# 3 Tier Architecture with EFCore
 
 ### Setup
 
@@ -30,22 +30,29 @@ dotnet add BusinessLayer/BusinessLayer.csproj reference DataAccessLayer/DataAcce
 createdb notificationsystem -U postgres
 ```
 
+## Packages
+Run the following commands in `DataAccessLayer/`:
 ```bash
-CREATE TABLE users (
-    userid VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(20) NOT NULL UNIQUE,
-    email VARCHAR(20) NOT NULL UNIQUE,
-    phone VARCHAR(20) NOT NULL UNIQUE
-);
-
-CREATE TABLE notifications (
-    messageid VARCHAR(36) PRIMARY KEY,
-    message VARCHAR(160) NOT NULL,
-    sentdate DATE NOT NULL,
-    notiftype SMALLINT NOT NULL,
-    userid VARCHAR NOT NULL REFERENCES users(userid)
-);
+dotnet add package Microsoft.EntityFrameworkCore --version 8.0.8
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.8
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.8
+dotnet add package DotNetEnv --version 3.2.0
 ```
+
+Also add to `Presentation/`:
+```bash
+dotnet add Presentation/Presentation.csproj package Microsoft.EntityFrameworkCore.Design --version 8.0.8
+```
+
+## Migrations
+Run from `DataAccessLayer/`:
+```bash
+cd DataAccessLayer
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+replace the password with yours in `DataAccessLayer/Database/Context.cs`.
 
 To run the project: 
 ```bash
@@ -57,4 +64,3 @@ dotnet run
 
 ![1](Screenshots/1.png)
 ![2](Screenshots/2.png)
-![3](Screenshots/3.png)

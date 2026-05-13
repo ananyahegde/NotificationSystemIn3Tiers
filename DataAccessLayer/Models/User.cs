@@ -8,6 +8,8 @@ namespace DataAccessLayer.Models
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
 
+        public ICollection<Notification> Notifications { get; set; }
+
         public User() { }
 
         public User(string userId, string name, string email, string phone)
